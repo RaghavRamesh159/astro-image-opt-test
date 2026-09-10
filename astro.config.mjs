@@ -1,5 +1,5 @@
 import { defineConfig } from "astro/config";
-import { omegaAdapter } from "@amzn/omega-astro-adapter/integration";
+import { amplifyAdapter } from "@amzn/omega-astro-adapter/integration";
 
 export default defineConfig({
   output: "server",
