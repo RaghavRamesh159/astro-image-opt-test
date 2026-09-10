@@ -1,0 +1,17 @@
+{
+  "name": "astro-image-opt-test",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Minimal Astro app to verify image optimization works. Bring your own adapter/optimizer.",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^5.0.0",
+    "sharp": "^0.33.0"
+  }
+}
