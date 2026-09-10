@@ -1,11 +1,8 @@
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
+import { omegaAdapter } from "@amzn/omega-astro-adapter/integration";
 
-// Plain Astro app. Add YOUR adapter here (it handles image optimization):
-//   import myAdapter from '...';
-//   export default defineConfig({ output: 'server', adapter: myAdapter(), ... });
 export default defineConfig({
-  image: {
-    // Allow remote images to be optimized. Tighten to your CDN host if you like.
-    remotePatterns: [{ protocol: 'https' }],
-  },
+  output: "server",
+  adapter: omegaAdapter(),
+  image: { domains: ["images.example.com"] },
 });
