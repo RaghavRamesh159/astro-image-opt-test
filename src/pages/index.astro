@@ -1,95 +1,20 @@
 ---
-import { Image, Picture, getImage } from 'astro:assets';
-import source from '../assets/source-1200x800.png';
+// Statically prerendered page. The Omega cache provider must NOT emit
+// cache-control or x-omega-cache-tags headers for prerendered pages.
+export const prerender = true;
 
-// A remote image to optimize. Point this at YOUR CDN to test the platform
-// optimizer path. Override without editing: REMOTE_IMAGE_URL=... npm run dev
-const remoteUrl = import.meta.env.REMOTE_IMAGE_URL ?? 'https://docs.astro.build/assets/full-logo-light.png';
-
-// Explicit programmatic optimization — lets us print the exact generated URL/attrs.
-// In `server` output this resolves to a /_image?... URL served on demand;
-// in `static` output it resolves to a pre-built /_astro/*.webp asset.
-const optimizedWebp = await getImage({ src: source, width: 600, format: 'webp' });
-const optimizedAvif = await getImage({ src: source, width: 600, format: 'avif' });
-
-// The original imported asset carries intrinsic metadata — proof of what the
-// source is before optimization.
-const original = { src: source.src, width: source.width, height: source.height, format: source.format };
+import Layout from "../layouts/Layout.astro";
 ---
-
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Astro image optimization test</title>
-    <style>
-      body { font-family: system-ui, sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
-      section { border: 1px solid #ccc; border-radius: 8px; padding: 1rem; margin: 1.5rem 0; }
-      h2 { margin-top: 0; }
-      img { max-width: 100%; height: auto; border: 1px solid #eee; }
-      code, pre { background: #f5f5f5; padding: 0.1rem 0.3rem; border-radius: 4px; word-break: break-all; }
-      pre { padding: 0.75rem; overflow-x: auto; }
-      .hint { color: #555; font-size: 0.9rem; }
-      .ok { color: #137333; font-weight: 600; }
-    </style>
-  </head>
-  <body>
-    <h1>Astro image optimization test</h1>
-    <p class="hint">
-      Source asset: <code>{original.width}×{original.height}</code> <code>{original.format}</code>
-      (~381&nbsp;KB PNG). If optimization works, the images below are served as
-      <code>webp/avif</code> at reduced widths/bytes. Open DevTools → Network and
-      compare bytes/format, and View Source to inspect <code>srcset</code>.
-    </p>
-
-    <section>
-      <h2>1. Local &lt;Image&gt; — auto format &amp; width</h2>
-      <Image src={source} alt="local auto" width={600} />
-      <p class="hint">Expect a single optimized (webp) request ~600px wide, far smaller than the 381&nbsp;KB source.</p>
-    </section>
-
-    <section>
-      <h2>2. Responsive &lt;Image&gt; — srcset via widths</h2>
-      <Image src={source} alt="responsive" widths={[400, 800, 1200]} sizes="(max-width: 800px) 100vw, 800px" />
-      <p class="hint">Expect a <code>srcset</code> with 400w/800w/1200w candidates. Note: Astro never upscales past the 1200px source.</p>
-    </section>
-
-    <section>
-      <h2>3. &lt;Picture&gt; — modern format negotiation</h2>
-      <Picture src={source} alt="picture" formats={['avif', 'webp']} fallbackFormat="png" width={600} />
-      <p class="hint">Expect a <code>&lt;picture&gt;</code> with <code>&lt;source type="image/avif"&gt;</code> and <code>type="image/webp"</code>, plus a png fallback.</p>
-    </section>
-
-    <section>
-      <h2>4. Explicit getImage() — inspect the generated URL</h2>
-      <p><strong>webp@600:</strong></p>
-      <pre>{JSON.stringify(optimizedWebp.attributes, null, 2)}
-src = {optimizedWebp.src}</pre>
-      <p><strong>avif@600:</strong></p>
-      <pre>src = {optimizedAvif.src}</pre>
-      <img src={optimizedWebp.src} alt="explicit webp" width="600" />
-      <p class="hint">
-        In <code>server</code> mode these are <code>/_image?href=...&amp;w=600&amp;f=webp</code> URLs
-        (runtime optimization). In <code>static</code> mode they're hashed
-        <code>/_astro/*.webp</code> files (build-time).
-      </p>
-    </section>
-
-    <section>
-      <h2>5. Remote image optimization</h2>
-      <p class="hint">Remote source: <code>{remoteUrl}</code></p>
-      <Image src={remoteUrl} alt="remote" inferSize width={600} format="webp" />
-      <p class="hint">
-        Requires <code>image.remotePatterns</code>/<code>domains</code> to allow the host.
-        Point <code>REMOTE_IMAGE_URL</code> at your CDN to verify the platform optimizer.
-      </p>
-    </section>
-
-    <section>
-      <h2>Baseline — unoptimized original (for comparison)</h2>
-      <img src={original.src} alt="raw original" width="600" />
-      <p class="hint">This is the raw imported asset URL: <code>{original.src}</code>. Compare its bytes to case&nbsp;1.</p>
-    </section>
-  </body>
-</html>
+<Layout title="Home">
+  <h1>Static Home</h1>
+  <p>This page is statically prerendered at build time.</p>
+  <nav>
+    <ul>
+      <li><a href="/ssr">SSR</a></li>
+      <li><a href="/streaming">Streaming</a></li>
+      <li><a href="/products/1">Product 1 (ISR)</a></li>
+      <li><a href="/rewritten">Rewritten</a></li>
+      <li><a href="/images">Images (optimization)</a></li>
+    </ul>
+  </nav>
+</Layout>

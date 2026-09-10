@@ -1,0 +1,29 @@
+---
+// Streaming SSR page. Exercises the "static content streaming" primitive:
+// the document shell (head + first marker) is flushed immediately, then each
+// SlowChunk flushes its HTML as its own `await` resolves, so the response
+// arrives in ordered pieces over time instead of one buffered blob.
+//
+// Must be on-demand rendered — a prerendered page would emit a finished HTML
+// file with no streaming boundaries. This route becomes a `compute` target in
+// the deployment manifest, and the Omega adapter's SSR server streams the
+// ReadableStream body chunk-by-chunk (runtime/server.ts), so the flush
+// ordering is observable at the HTTP layer through Lambda Lite + the CDN.
+export const prerender = false;
+
+import Layout from "../layouts/Layout.astro";
+import SlowChunk from "../components/SlowChunk.astro";
+
+const startedAt = new Date().toISOString();
+---
+<Layout title="Streaming">
+  <h1>Streaming SSR</h1>
+  <p data-testid="stream-shell">
+    Shell flushed at {startedAt}. Chunks below stream in as they render.
+  </p>
+  <SlowChunk label="a" delayMs={0} />
+  <SlowChunk label="b" delayMs={250} />
+  <SlowChunk label="c" delayMs={500} />
+  <p data-testid="stream-done">All chunks flushed.</p>
+  <a href="/">Home</a>
+</Layout>

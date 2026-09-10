@@ -1,0 +1,9 @@
+{
+  "$schema": "https://omega.aws/v0.1.0/schema.json",
+  "name": "omega-astro-canary",
+  "deploy": {
+    "install": "npm install",
+    "build": "npm run build",
+    "output_directory": ".amplify"
+  }
+}

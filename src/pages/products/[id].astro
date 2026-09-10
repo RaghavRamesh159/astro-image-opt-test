@@ -1,0 +1,25 @@
+---
+// On-demand rendered (SSR) route that opts into ISR caching via
+// Astro.cache.set(). The Omega cache provider translates these directives into
+// an edge Cache-Control directive (s-maxage=60, stale-while-revalidate=600)
+// plus the x-omega-cache-tags header (sanitized tags + astro-path Path_Tag).
+export const prerender = false;
+
+import Layout from "../../layouts/Layout.astro";
+
+const { id } = Astro.params;
+
+Astro.cache.set({
+  maxAge: 60,
+  swr: 600,
+  tags: ["products", `product:${id}`],
+});
+
+const renderedAt = new Date().toISOString();
+---
+<Layout title={`Product ${id}`}>
+  <h1>Product {id}</h1>
+  <p>Server-rendered on demand and cached via Astro.cache.set().</p>
+  <p>Rendered at: {renderedAt}</p>
+  <a href="/">Home</a>
+</Layout>

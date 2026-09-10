@@ -1,0 +1,14 @@
+---
+// Target page for middleware rewrite test.
+// Middleware rewrites /middleware-test to this page.
+// If middleware runs, requests to /middleware-test serve this content.
+// If middleware doesn't run, /middleware-test returns 404 (no page there).
+export const prerender = false;
+
+import Layout from "../layouts/Layout.astro";
+---
+<Layout title="Middleware Target">
+  <main>
+    <p data-testid="middleware-marker">middleware-target-reached</p>
+  </main>
+</Layout>

@@ -1,0 +1,17 @@
+---
+// On-demand rendered (SSR) route that does not opt into caching. The Omega
+// cache provider must NOT emit cache-control or x-omega-cache-tags headers.
+export const prerender = false;
+
+import Layout from "../layouts/Layout.astro";
+
+const renderedAt = new Date().toISOString();
+const deployTime = "DEPLOY_TIMESTAMP";
+---
+<Layout title="SSR">
+  <h1>SSR Page</h1>
+  <p>Server-rendered on demand without opting into caching.</p>
+  <p data-testid="ssr-marker">Server-rendered at: {renderedAt}</p>
+  <p data-testid="deploy-time">canary-deploy-time: {deployTime}</p>
+  <a href="/">Home</a>
+</Layout>

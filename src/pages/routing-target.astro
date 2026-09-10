@@ -1,0 +1,13 @@
+---
+// Target page for redirect and rewrite tests.
+// Both /redirect-test (via 301) and /rewrite-test (via context.rewrite)
+// end up serving this page. The canary asserts on "routing-marker" in the body.
+export const prerender = false;
+
+import Layout from "../layouts/Layout.astro";
+---
+<Layout title="Routing Target">
+  <main>
+    <p data-testid="routing-marker">routing-target-reached</p>
+  </main>
+</Layout>

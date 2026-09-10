@@ -1,0 +1,49 @@
+---
+// Image optimization page. Astro's <Image> component rewrites its src to the
+// `/_image` endpoint with width/format query params. The Omega adapter does
+// not run sharp locally (it logs a benign build-time notice); instead it emits
+// an `imageOptimization` route for `^/_image$` in the deployment manifest, so
+// Omega performs the optimization at the edge at request time.
+//
+// This exercises both optimization paths:
+//   - a local bundled asset imported from src/assets
+//   - a remote image (allowed via config.image.remotePatterns)
+export const prerender = false;
+
+import Layout from "../layouts/Layout.astro";
+import { Image } from "astro:assets";
+import omegaCanary from "../assets/omega-canary.png";
+---
+<Layout title="Images">
+  <h1>Image Optimization</h1>
+  <p>
+    These images are rendered through Astro's <code>&lt;Image&gt;</code> component,
+    which routes optimization through <code>/_image</code>. Sharp is not run by
+    the adapter locally &mdash; Omega optimizes the image at the edge.
+  </p>
+
+  <section data-testid="image-local">
+    <h2>Local asset (WebP, resized)</h2>
+    <Image
+      src={omegaCanary}
+      alt="Omega canary test image"
+      width={600}
+      height={315}
+      format="webp"
+    />
+  </section>
+
+  <section data-testid="image-remote">
+    <h2>Remote image (optimized)</h2>
+    <Image
+      src="https://images.unsplash.com/photo-1506744038136-46273834b3fb"
+      alt="Remote landscape"
+      width={600}
+      height={400}
+      format="webp"
+      inferSize={false}
+    />
+  </section>
+
+  <a href="/">Home</a>
+</Layout>

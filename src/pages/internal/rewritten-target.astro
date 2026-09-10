@@ -1,0 +1,14 @@
+---
+// Target of the runtime rewrite in src/middleware.ts. A request to /rewritten
+// is rewritten here by middleware while the browser URL stays /rewritten.
+export const prerender = false;
+
+import Layout from "../../layouts/Layout.astro";
+---
+<Layout title="Rewritten">
+  <h1>Rewritten Content</h1>
+  <p data-testid="rewrite-marker">
+    This content was served via Astro.rewrite() while the URL stayed /rewritten.
+  </p>
+  <a href="/">Home</a>
+</Layout>

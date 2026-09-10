@@ -1,0 +1,26 @@
+---
+// A deliberately slow async component. Astro renders components as their
+// top-level `await`s resolve and flushes each one's HTML to the response as
+// soon as it is ready, so a page composed of several SlowChunks with
+// increasing delays is emitted incrementally rather than all at once.
+//
+// The Omega Astro adapter's SSR server (runtime/server.ts) pipes the response
+// ReadableStream to the Node response chunk-by-chunk without buffering, so
+// these flush boundaries survive through Lambda Lite and the CDN. The
+// data-testid + data-delay attributes let the e2e canary assert that later
+// chunks arrive after earlier ones (observable streaming).
+interface Props {
+  label: string;
+  delayMs: number;
+}
+
+const { label, delayMs } = Astro.props;
+
+await new Promise((resolve) => setTimeout(resolve, delayMs));
+
+const flushedAt = new Date().toISOString();
+---
+<section data-testid={`stream-chunk-${label}`} data-delay={delayMs}>
+  <h2>Chunk {label}</h2>
+  <p>Flushed at {flushedAt} (after {delayMs}ms)</p>
+</section>
